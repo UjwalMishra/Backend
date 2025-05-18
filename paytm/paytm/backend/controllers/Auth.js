@@ -2,6 +2,7 @@ const { signupSchema } = require("../zodSchemas/signup");
 const { User } = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { signinSchema } = require("../zodSchemas/signin");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const signupController = async (req, res) => {
@@ -22,11 +23,13 @@ const signupController = async (req, res) => {
         msg: "Email already taken",
       });
     }
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+
     const user = await User.create({
       userName: body.userName,
       firstName: body.firstName,
       lastName: body.lastName,
-      password: body.password,
+      password: hashedPassword,
     });
 
     const token = jwt.sign(
@@ -68,7 +71,8 @@ const signinController = async (req, res) => {
         msg: "User not exists, please signup first",
       });
     }
-    if (user.password !== body.password) {
+    const isPasswordValid = await bcrypt.compare(body.password, user.password);
+    if (!isPasswordValid) {
       return res.status(400).json({
         success: false,
         msg: "Wrong Password",

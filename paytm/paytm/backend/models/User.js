@@ -4,13 +4,13 @@ const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     trim: true,
-    maxLength: 20,
+    maxLength: 50,
     required: true,
   },
   lastName: {
     type: String,
     trim: true,
-    maxLength: 20,
+    maxLength: 50,
     required: true,
   },
   password: {
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     minLength: 4,
-    maxLength: 20,
+    maxLength: 50,
     required: true,
   },
 });
