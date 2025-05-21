@@ -131,8 +131,33 @@ const updateProfileController = async (req, res) => {
   }
 };
 
+const findUserController = async (req, res) => {
+  try {
+    const { val } = req.body;
+
+    const users = await User.find({
+      $or: [
+        { firstName: { $regex: `.*${val}.*`, $options: "i" } },
+        { lastName: { $regex: `.*${val}.*`, $options: "i" } },
+      ],
+    });
+    return res.status(200).json({
+      success: true,
+      msg: "Users fetched successfully",
+      Users: users,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      msg: "Internal server error while signing in user",
+      err: err,
+    });
+  }
+};
+
 module.exports = {
   signupController,
   signinController,
   updateProfileController,
+  findUserController,
 };

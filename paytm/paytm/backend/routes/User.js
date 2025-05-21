@@ -5,7 +5,8 @@ const {
   signupController,
   signinController,
   updateProfileController,
-} = require("../controllers/Auth");
+  findUserController,
+} = require("../controllers/User");
 const { authMiddleware } = require("../middlewares/auth");
 const router = express.Router();
 
@@ -17,5 +18,8 @@ router.post("/signin", signinController);
 
 //update-profile
 router.put("/update", authMiddleware, updateProfileController);
+
+//find or get users
+router.get("/findusers", authMiddleware, findUserController);
 
 module.exports = router;
