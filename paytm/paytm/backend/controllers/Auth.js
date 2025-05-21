@@ -3,6 +3,8 @@ const { User } = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { signinSchema } = require("../zodSchemas/signin");
 const bcrypt = require("bcrypt");
+const { updateProfileSchema } = require("../zodSchemas/updateProfile");
+
 require("dotenv").config();
 
 const signupController = async (req, res) => {
@@ -99,4 +101,38 @@ const signinController = async (req, res) => {
   }
 };
 
-module.exports = { signupController, signinController };
+const updateProfileController = async (req, res) => {
+  try {
+    const body = req.body;
+    const parsedBody = updateProfileSchema.safeParse(body);
+    if (!parsedBody.success) {
+      return res.status(400).json({
+        success: false,
+        msg: "Wrong Inputs",
+      });
+    }
+    const authHeaders = req.headers.authorization;
+    const token = authHeaders.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+    console.log("id ", userId);
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body);
+    return res.status(200).json({
+      success: true,
+      msg: "user details updated successfully",
+      updatedUser: updatedUser,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      msg: "Internal server error while signing in user",
+      err: err,
+    });
+  }
+};
+
+module.exports = {
+  signupController,
+  signinController,
+  updateProfileController,
+};
