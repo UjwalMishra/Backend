@@ -3,6 +3,7 @@ const { dbConnect } = require("./config/dbConnect");
 const cors = require("cors");
 //importing routes
 const authRoutes = require("./routes/User");
+const accountRoutes = require("./routes/Account");
 const app = express();
 
 //middlewares
@@ -14,11 +15,7 @@ dbConnect();
 
 //routes
 app.use("/api/v1/user", authRoutes);
-
-//default route
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
+app.use("/api/v1/account", accountRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT || 3000, () => {

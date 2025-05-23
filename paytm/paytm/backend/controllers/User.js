@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { signinSchema } = require("../zodSchemas/signin");
 const bcrypt = require("bcrypt");
 const { updateProfileSchema } = require("../zodSchemas/updateProfile");
+const { Account } = require("../models/Account");
 
 require("dotenv").config();
 
@@ -32,6 +33,13 @@ const signupController = async (req, res) => {
       firstName: body.firstName,
       lastName: body.lastName,
       password: hashedPassword,
+    });
+
+    //creating account of user with random balance
+    const userId = user._id;
+    await Account.create({
+      userId: userId,
+      balance: 1 + Math.random() * 1000,
     });
 
     const token = jwt.sign(
@@ -133,18 +141,22 @@ const updateProfileController = async (req, res) => {
 
 const findUserController = async (req, res) => {
   try {
-    const { val } = req.body;
+    const { filter } = req.query || "";
 
     const users = await User.find({
       $or: [
-        { firstName: { $regex: `.*${val}.*`, $options: "i" } },
-        { lastName: { $regex: `.*${val}.*`, $options: "i" } },
+        { firstName: { $regex: `.*${filter}.*`, $options: "i" } },
+        { lastName: { $regex: `.*${filter}.*`, $options: "i" } },
       ],
     });
     return res.status(200).json({
       success: true,
       msg: "Users fetched successfully",
-      Users: users,
+      Users: users.map((user) => ({
+        userName: user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })),
     });
   } catch (err) {
     return res.status(500).json({
