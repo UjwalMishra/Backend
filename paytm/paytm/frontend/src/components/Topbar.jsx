@@ -2,11 +2,10 @@ import React from "react";
 
 const Topbar = () => {
   return (
-    <div className="w-full px-16 pt-2">
-      <div className="flex justify-between border-1 shadow-lg py-2 rounded-md px-8 mt-16">
-        {" "}
-        <div className="text-xl font-medium ">PayKro!</div>
-        <div className="text-xl font-medium ">Hello! @ujwal</div>
+    <div className="w-full fixed top-0 left-0 bg-white shadow-md z-50">
+      <div className="flex justify-between items-center px-8 py-4">
+        <div className="text-2xl font-bold text-blue-600">PayKro!</div>
+        <div className="text-lg font-medium text-gray-800">Hello! @ujwal</div>
       </div>
     </div>
   );
