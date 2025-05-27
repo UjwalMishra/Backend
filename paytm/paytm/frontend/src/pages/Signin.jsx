@@ -1,14 +1,22 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Signin = () => {
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign-in logic here (e.g., API call)
-    console.log("Username:", username);
-    console.log("Password:", password);
+    try {
+      const res = await axios.post("http://localhost:3000/api/v1/user/signin", {
+        userName,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="flex items-center justify-center min-h-screen ">
@@ -27,8 +35,8 @@ const Signin = () => {
             <input
               id="username"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
               placeholder="ujwal@gmail.com"
               className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required

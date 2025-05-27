@@ -45,6 +45,7 @@ const signupController = async (req, res) => {
     const token = jwt.sign(
       {
         userId: user._id,
+        username: user.userName,
       },
       process.env.JWT_SECRET
     );
@@ -91,6 +92,7 @@ const signinController = async (req, res) => {
     const token = jwt.sign(
       {
         userId: user._id,
+        username: user.userName,
       },
       process.env.JWT_SECRET
     );
@@ -142,12 +144,17 @@ const findUserController = async (req, res) => {
 
     let users;
     if (filter === "") {
-      users = await User.find({});
+      users = await User.find({ _id: { $ne: req.userId } });
     } else {
       users = await User.find({
-        $or: [
-          { firstName: { $regex: `.*${filter}.*`, $options: "i" } },
-          { lastName: { $regex: `.*${filter}.*`, $options: "i" } },
+        $and: [
+          { _id: { $ne: req.userId } },
+          {
+            $or: [
+              { firstName: { $regex: `.*${filter}.*`, $options: "i" } },
+              { lastName: { $regex: `.*${filter}.*`, $options: "i" } },
+            ],
+          },
         ],
       });
     }

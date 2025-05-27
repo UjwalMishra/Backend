@@ -1,21 +1,27 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await axios.post("http://localhost:3000/api/v1/user/signup", {
-      firstName,
-      lastName,
-      userName,
-      password,
-    });
-    localStorage.setItem("token", res.data.token);
+    try {
+      e.preventDefault();
+      const res = await axios.post("http://localhost:3000/api/v1/user/signup", {
+        firstName,
+        lastName,
+        userName,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
