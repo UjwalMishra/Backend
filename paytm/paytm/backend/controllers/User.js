@@ -119,10 +119,7 @@ const updateProfileController = async (req, res) => {
         msg: "Wrong Inputs",
       });
     }
-    const authHeaders = req.headers.authorization;
-    const token = authHeaders.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId;
+    const userId = req.userId;
     console.log("id ", userId);
     const updatedUser = await User.findByIdAndUpdate(userId, req.body);
     return res.status(200).json({
@@ -141,18 +138,25 @@ const updateProfileController = async (req, res) => {
 
 const findUserController = async (req, res) => {
   try {
-    const { filter } = req.query || "";
+    const { filter = "" } = req.query;
 
-    const users = await User.find({
-      $or: [
-        { firstName: { $regex: `.*${filter}.*`, $options: "i" } },
-        { lastName: { $regex: `.*${filter}.*`, $options: "i" } },
-      ],
-    });
+    let users;
+    if (filter === "") {
+      users = await User.find({});
+    } else {
+      users = await User.find({
+        $or: [
+          { firstName: { $regex: `.*${filter}.*`, $options: "i" } },
+          { lastName: { $regex: `.*${filter}.*`, $options: "i" } },
+        ],
+      });
+    }
+    // console.log("users : ", users);
     return res.status(200).json({
       success: true,
       msg: "Users fetched successfully",
       Users: users.map((user) => ({
+        userId: user._id,
         userName: user.userName,
         firstName: user.firstName,
         lastName: user.lastName,

@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
+  const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign-up logic here (e.g., API call)
-    console.log("First Name:", firstName);
-    console.log("Last Name:", lastName);
-    console.log("Username:", username);
-    console.log("Password:", password);
+    const res = await axios.post("http://localhost:3000/api/v1/user/signup", {
+      firstName,
+      lastName,
+      userName,
+      password,
+    });
+    localStorage.setItem("token", res.data.token);
   };
 
   return (
@@ -67,7 +69,7 @@ const Signup = () => {
             <input
               id="username"
               type="email"
-              value={username}
+              value={userName}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="ujwal@gmail.com"
               className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"

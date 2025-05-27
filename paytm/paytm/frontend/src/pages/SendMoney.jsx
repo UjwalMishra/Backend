@@ -1,11 +1,36 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const SendMoney = () => {
   const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState(""); // Added state for response message
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const name = searchParams.get("name");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Amount:", amount);
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/account/transfer",
+        {
+          to: id,
+          amount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(res.data);
+      setMessage(res.data.msg);
+      setAmount("");
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to send money. Please try again."); // Error message
+    }
   };
 
   return (
@@ -16,10 +41,10 @@ const SendMoney = () => {
         </h2>
 
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center text-lg font-bold text-blue-700">
-            S
+          <div className="w-12 h-12 capitalize rounded-full bg-blue-200 flex items-center justify-center text-lg font-bold text-blue-700">
+            {name[0]}
           </div>
-          <p className="text-lg font-medium text-gray-800">Shivam Mishra</p>
+          <p className="text-lg font-medium text-gray-800 capitalize">{name}</p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -48,6 +73,13 @@ const SendMoney = () => {
             Send
           </button>
         </form>
+
+        {/* Display the message below the form */}
+        {message && (
+          <div className="mt-4 text-center text-green-600 font-medium">
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );
