@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SendMoney = () => {
   const [amount, setAmount] = useState("");
@@ -8,7 +8,7 @@ const SendMoney = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   const name = searchParams.get("name");
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,8 +28,8 @@ const SendMoney = () => {
       setMessage(res.data.msg);
       setAmount("");
     } catch (error) {
-      console.error(error);
-      setMessage("Failed to send money. Please try again."); // Error message
+      // console.error(error);
+      setMessage("Failed to send money. Please try again.");
     }
   };
 
