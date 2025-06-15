@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { useFetch } from "./hooks/useFetch";
 import { usePrev } from "./hooks/usePrev";
+import { useDebounce } from "./hooks/useDebounce";
 
 //custom hook
 // function useCounter() {
@@ -26,31 +27,47 @@ function App() {
   // );
 
   //------------usePrev------------------
-  const [val, setVal] = useState(0);
-  const prev = usePrev(val);
+  // const [val, setVal] = useState(0);
+  // const prev = usePrev(val);
+
+  //
+  // return (
+  //   <>
+  //------------------useFetch-------------------------
+  //     <div>
+  //       {/* <button onClick={incrementVal}>Increment</button>
+  //       <div>{count}</div>
+  //       {loading ? (
+  //         <div>Loading....</div>
+  //       ) : (
+  //         <div>
+  //           Data :<div>{JSON.stringify(data)}</div>
+  //         </div>
+  //       )} */}
+
+  //-----------usePrev----------------
+  //       <p>{val}</p>
+  //       <button
+  //         onClick={() => {
+  //           setVal((v) => v + 1);
+  //         }}
+  //       >
+  //         click me!
+  //       </button>
+  //       <p>Previous value was {prev}</p>
+  //     </div>
+  //   </>
+  // );
+  const expensiveOperation = () => {
+    console.log("Expensive operation" + i);
+  };
+  const debounce = useDebounce(expensiveOperation);
+
   return (
-    <>
-      <div>
-        {/* <button onClick={incrementVal}>Increment</button>
-        <div>{count}</div>
-        {loading ? (
-          <div>Loading....</div>
-        ) : (
-          <div>
-            Data :<div>{JSON.stringify(data)}</div>
-          </div>
-        )} */}
-        <p>{val}</p>
-        <button
-          onClick={() => {
-            setVal((v) => v + 1);
-          }}
-        >
-          click me!
-        </button>
-        <p>Previous value was {prev}</p>
-      </div>
-    </>
+    <div>
+      <p>Enter val : </p>
+      <input type="text" onChange={debounce} />
+    </div>
   );
 }
 
