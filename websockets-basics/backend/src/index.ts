@@ -8,8 +8,8 @@ const wss = new WebSocketServer({ port: PORT });
 wss.on("connection", (socket) => {
   console.log("User connected");
   socket.on("message", (e) => {
-    if (e.toString() === "Ping!") {
-      socket.send("Pong!");
+    if (e.toString()) {
+      socket.send(e.toString());
     }
   });
 });
