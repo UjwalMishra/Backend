@@ -30,9 +30,15 @@ wss.on("connection", (socket) => {
 
       const userCurrentRoom = allUsers.find((x) => x.socket == socket)?.roomId;
 
+      const fullMessage = JSON.stringify({
+        message: parsedMsg.payload.message,
+        username: parsedMsg.payload.username || "Anonymous",
+        timestamp: parsedMsg.payload.timestamp || new Date().toISOString(),
+      });
+
       for (let i = 0; i < allUsers.length; i++) {
         if (allUsers[i].roomId === userCurrentRoom) {
-          allUsers[i].socket.send(parsedMsg.payload.message);
+          allUsers[i].socket.send(fullMessage);
         }
       }
     }
